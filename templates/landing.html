@@ -17,7 +17,7 @@
         </p>
         <div class="hero-actions">
             <a href="{{ url_for('register') }}">Create free account</a>
-            <a href="#">See how it works</a>
+            <a href="#" id="open-demo">See how it works</a>
         </div>
     </div>
     <div class="hero-visual">
@@ -86,4 +86,48 @@
     </div>
 </section>
 
+<div class="modal" id="demo-modal" role="dialog" aria-modal="true" aria-label="How Spendly works" hidden>
+    <div class="modal-box">
+        <button type="button" class="modal-close" id="close-demo" aria-label="Close video">&times;</button>
+        <div class="modal-video">
+            <!-- Replace data-src="#" below with your video's embed URL (https://www.youtube.com/embed/VIDEO_ID) -->
+            <iframe id="demo-frame" data-src="#"
+                    title="How Spendly works" allow="autoplay; encrypted-media; picture-in-picture"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        var modal = document.getElementById('demo-modal');
+        var frame = document.getElementById('demo-frame');
+
+        function openModal(e) {
+            e.preventDefault();
+            // '#' is the empty placeholder: load nothing until a real URL is set
+            if (frame.dataset.src !== '#') {
+                frame.src = frame.dataset.src + '?autoplay=1';
+            }
+            modal.hidden = false;
+        }
+
+        function closeModal() {
+            modal.hidden = true;
+            frame.src = '';   // unloads the iframe, which stops the video
+        }
+
+        document.getElementById('open-demo').addEventListener('click', openModal);
+        document.getElementById('close-demo').addEventListener('click', closeModal);
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) closeModal();   // click on the dark backdrop
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && !modal.hidden) closeModal();
+        });
+    })();
+</script>
 {% endblock %}
